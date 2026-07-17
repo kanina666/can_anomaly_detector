@@ -1,0 +1,273 @@
+{
+  "yolo_model_path": "can_detector_yolov8n.pt",
+  "percell_model_path": "percell_classifier.pt",
+  "percell_input_size": 64,
+  "zone_mid": {
+    "first_pos": 943.0,
+    "second_pos": 688.5
+  },
+  "half_size": {
+    "first_pos": {
+      "far": 70,
+      "near": 90
+    },
+    "second_pos": {
+      "far": 65,
+      "near": 85
+    }
+  },
+  "yolo_zone_conf": {
+    "far": 0.2,
+    "near": 0.25
+  },
+  "expected_count": {
+    "first_pos": 208,
+    "second_pos": 221
+  },
+  "reliability_mask_chronic_cells": {
+    "first_pos": [
+      [
+        10,
+        15
+      ],
+      [
+        11,
+        15
+      ],
+      [
+        12,
+        11
+      ],
+      [
+        12,
+        12
+      ],
+      [
+        12,
+        13
+      ],
+      [
+        12,
+        15
+      ]
+    ],
+    "second_pos": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        10
+      ],
+      [
+        0,
+        12
+      ],
+      [
+        0,
+        13
+      ],
+      [
+        0,
+        14
+      ],
+      [
+        0,
+        15
+      ],
+      [
+        7,
+        16
+      ],
+      [
+        10,
+        0
+      ],
+      [
+        10,
+        16
+      ],
+      [
+        11,
+        16
+      ],
+      [
+        12,
+        0
+      ],
+      [
+        12,
+        1
+      ],
+      [
+        12,
+        2
+      ],
+      [
+        12,
+        3
+      ],
+      [
+        12,
+        4
+      ],
+      [
+        12,
+        5
+      ],
+      [
+        12,
+        6
+      ],
+      [
+        12,
+        7
+      ],
+      [
+        12,
+        8
+      ],
+      [
+        12,
+        9
+      ],
+      [
+        12,
+        10
+      ],
+      [
+        12,
+        11
+      ],
+      [
+        12,
+        12
+      ],
+      [
+        12,
+        13
+      ],
+      [
+        12,
+        14
+      ],
+      [
+        12,
+        15
+      ],
+      [
+        12,
+        16
+      ]
+    ]
+  },
+  "ensemble_type": {
+    "first_pos": "logreg",
+    "second_pos": "lightgbm"
+  },
+  "ensemble_logreg": {
+    "first_pos": {
+      "weights": [
+        -0.5437201059499827,
+        0.3755697717185818,
+        1.5736487336246152,
+        1.1180360530203572
+      ],
+      "feature_mean": [
+        -7.124,
+        0.6579145025014878,
+        1.7945753749012947
+      ],
+      "feature_std": [
+        5.889365330831496,
+        0.2492386337686245,
+        0.7278417521734699
+      ],
+      "features": [
+        "yolo_deficit",
+        "max",
+        "sum_top3"
+      ],
+      "threshold": 0.4066,
+      "val_recall": 1.0,
+      "val_specificity": 0.9516,
+      "n_train": 250,
+      "n_val": 108,
+      "sweep_table": [
+        {
+          "spec_target": 0.75,
+          "threshold": 0.1488,
+          "train_recall": 1.0,
+          "train_specificity": 0.7552,
+          "val_recall": 1.0,
+          "val_specificity": 0.7419
+        },
+        {
+          "spec_target": 0.8,
+          "threshold": 0.1928,
+          "train_recall": 0.9626,
+          "train_specificity": 0.8042,
+          "val_recall": 1.0,
+          "val_specificity": 0.871
+        },
+        {
+          "spec_target": 0.85,
+          "threshold": 0.3047,
+          "train_recall": 0.9346,
+          "train_specificity": 0.8531,
+          "val_recall": 1.0,
+          "val_specificity": 0.9194
+        },
+        {
+          "spec_target": 0.9,
+          "threshold": 0.4066,
+          "train_recall": 0.9252,
+          "train_specificity": 0.9091,
+          "val_recall": 1.0,
+          "val_specificity": 0.9516
+        },
+        {
+          "spec_target": 0.95,
+          "threshold": 0.4565,
+          "train_recall": 0.9065,
+          "train_specificity": 0.951,
+          "val_recall": 0.9783,
+          "val_specificity": 0.9516
+        }
+      ]
+    }
+  },
+  "ensemble_lgbm": {
+    "second_pos": {
+      "model_file": "percell_lgbm_second_pos.txt",
+      "feature_names": [
+        "yolo_deficit",
+        "max_masked",
+        "sum_top3_masked",
+        "max_row12",
+        "mean_row12",
+        "count_above_0.3_masked",
+        "count_above_0.5_masked",
+        "count_above_0.7_masked"
+      ]
+    }
+  },
+  "decision_threshold": {
+    "first_pos": {
+      "threshold": 0.4066
+    },
+    "second_pos": {
+      "threshold": 0.2903
+    }
+  },
+  "location_confidence_threshold": 0.99
+}
