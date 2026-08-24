@@ -9,6 +9,7 @@ import lightgbm as lgb
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from bbox_config import in_matrix
+import first_pos_v2
 
 CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
 
@@ -155,16 +156,59 @@ def _percell_probs(img, position, torch_device):
     return cells, probs
 
 
+def _check_anomaly_first_pos_v2(image_path, img, torch_device, yolo_device):
+    """first_pos uses a different architecture (whole-image ResNet18 OR
+    row12/row0 PatchCore+HSV zone signal) -- see first_pos_v2/model.py for
+    why, and CLAUDE.md "first_pos: сессия 2026-08-20" for the full
+    experimental history. detected_count/expected_count below are YOLO
+    count, kept for output-schema continuity and operator context only --
+    they play no role in this pipeline's is_anomaly decision (unlike the
+    per-cell ensemble used for second_pos)."""
+    detected_count = _yolo_count(image_path, "first_pos_anomaly", "first_pos", yolo_device)
+    expected_count = EXPECTED_COUNT["first_pos"]
+
+    v2 = first_pos_v2.check_anomaly(img, device=torch_device)
+
+    top3_locations = []
+    trigger = []
+    if v2["whole_image_probability"] >= CONFIG["first_pos_v2"]["whole_image_threshold"]:
+        trigger.append("whole_image")
+    for row, info in v2["row_flags"].items():
+        if info["flag"]:
+            trigger.append(f"row{row}")
+            for col in info["cols"]:
+                loc = info["locations"][col]
+                top3_locations.append({"x": round(loc["x"], 1), "y": round(loc["y"], 1),
+                                        "row": row, "col": col})
+    top3_locations = top3_locations[:3]
+    location_confidence = "high" if top3_locations else "low"
+
+    return {
+        "is_anomaly": v2["is_anomaly"],
+        "probability": v2["whole_image_probability"],
+        "threshold": CONFIG["first_pos_v2"]["whole_image_threshold"],
+        "trigger": trigger,
+        "detected_count": int(detected_count),
+        "expected_count": int(expected_count),
+        "location_confidence": location_confidence,
+        "top3_candidate_locations": top3_locations,
+    }
+
+
 def check_anomaly(image_path, position, device="cpu"):
     if position not in ("first_pos", "second_pos"):
         raise ValueError(f"position must be 'first_pos' or 'second_pos', got: {position}")
 
-    folder = f"{position}_anomaly"
     img = cv2.imread(image_path)
     if img is None:
         raise FileNotFoundError(image_path)
 
     torch_device, yolo_device = _normalize_device(device)
+
+    if ENSEMBLE_TYPE[position] == "patchcore_v2":
+        return _check_anomaly_first_pos_v2(image_path, img, torch_device, yolo_device)
+
+    folder = f"{position}_anomaly"
     detected_count = _yolo_count(image_path, folder, position, yolo_device)
     expected_count = EXPECTED_COUNT[position]
     yolo_deficit = expected_count - detected_count
@@ -240,8 +284,16 @@ def check_anomaly(image_path, position, device="cpu"):
 
 def run_as_service():
     device = "cpu"
-    _get_yolo(device)
-    _get_percell(device)
+    torch_device, yolo_device = _normalize_device(device)
+    model = _get_yolo(yolo_device)
+    _get_percell(torch_device)
+    first_pos_v2.warm(torch_device)
+    # YOLO's own first .predict() call carries a ~2.5s one-time internal
+    # warmup cost (graph/kernel setup), separate from loading the weights
+    # above -- run it once now on a dummy frame instead of on the first
+    # real request.
+    dummy = np.zeros((640, 640, 3), dtype=np.uint8)
+    model.predict(dummy, imgsz=1280, conf=0.05, iou=0.7, max_det=3000, device=yolo_device, verbose=False)
     print(json.dumps({"status": "ready"}), flush=True)
     for line in sys.stdin:
         line = line.strip()

@@ -1,0 +1,26 @@
+{
+  "dinov2_vits14_pretrain.pth": {
+    "sha256": "b938bf1bc15cd2ec0feacfe3a1bb553fe8ea9ca46a7e1d8d00217f29aef60cd9",
+    "size_bytes": 88283115
+  },
+  "resnet18_imagenet.pth": {
+    "sha256": "f37072fd47e89c5e827621c5baffa7500819f7896bbacec160b1a16c560e07ec",
+    "size_bytes": 46830571
+  },
+  "row0_dino_bank.npy": {
+    "sha256": "8606e095df1001c3a7b5afaed3f80d0887a10837ee663815a1d0cdb0854ac112",
+    "size_bytes": 215531648
+  },
+  "row0_resnet_bank.npy": {
+    "sha256": "e5e7cf5e69945c276cfdb76288f163d274883733b8a044e177ad9330527125ca",
+    "size_bytes": 215531648
+  },
+  "row12_dino_bank.npy": {
+    "sha256": "2b8818780607aefdc90f0543fc74351e6a026764cab8f0fe247736a4e452d9ee",
+    "size_bytes": 215531648
+  },
+  "row12_resnet_bank.npy": {
+    "sha256": "37cec017c197e2848bb0dbb51538385f17603ac431cc47fd781de1164c935d09",
+    "size_bytes": 215531648
+  }
+}

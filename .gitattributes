@@ -1,0 +1,1 @@
+system/first_pos_v2/artifacts/*.pth filter=lfs diff=lfs merge=lfs -text
