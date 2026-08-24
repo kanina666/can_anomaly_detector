@@ -1,8 +1,7 @@
 """
-first_pos v2 anomaly signal: whole-image ResNet18 OR (row12 / row0 zone
-PatchCore-AND-HSV signal). Developed 2026-08-20 to replace the per-cell
-ensemble for first_pos only -- second_pos is untouched (see top-level
-can_anomaly_detector.check_anomaly).
+first_pos anomaly signal: whole-image ResNet18 OR (row12 / row0 zone
+PatchCore-AND-HSV signal). second_pos uses a separate pipeline (see
+top-level can_anomaly_detector.check_anomaly).
 
 On the two honest held-out test sets (never touched by any training or
 threshold-calibration step here):
@@ -12,9 +11,6 @@ threshold-calibration step here):
                never seen by any component below):
       recall=100.0% (40/40)    specificity=97.1% (234/241, fp=7)
   pooled (n=521): recall=100.0% specificity=96.7% precision=93.0% accuracy=97.7%
-vs. the per-cell ensemble it replaces, on the same newdate_281 photos:
-  recall=47.5% specificity=86.3% (calibration/mask did not survive the
-  camera reposition -- see CLAUDE.md, "first_pos: сессия 2026-08-20").
 
 ARCHITECTURE:
   is_anomaly = (whole_image_resnet_prob >= whole_image_threshold)

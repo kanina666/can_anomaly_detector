@@ -157,13 +157,11 @@ def _percell_probs(img, position, torch_device):
 
 
 def _check_anomaly_first_pos_v2(image_path, img, torch_device, yolo_device):
-    """first_pos uses a different architecture (whole-image ResNet18 OR
-    row12/row0 PatchCore+HSV zone signal) -- see first_pos_v2/model.py for
-    why, and CLAUDE.md "first_pos: сессия 2026-08-20" for the full
-    experimental history. detected_count/expected_count below are YOLO
-    count, kept for output-schema continuity and operator context only --
-    they play no role in this pipeline's is_anomaly decision (unlike the
-    per-cell ensemble used for second_pos)."""
+    """first_pos: whole-image ResNet18 OR row12/row0 PatchCore+HSV zone
+    signal -- see first_pos_v2/model.py for architecture details.
+    detected_count/expected_count below are YOLO count, kept for
+    output-schema continuity and operator context only -- they play no
+    role in this pipeline's is_anomaly decision."""
     detected_count = _yolo_count(image_path, "first_pos_anomaly", "first_pos", yolo_device)
     expected_count = EXPECTED_COUNT["first_pos"]
 

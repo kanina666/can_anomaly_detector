@@ -10,11 +10,10 @@
 
 - **`first_pos`** — `first_pos_v2/`: whole-image ResNet18 **ИЛИ**
   (row12 / row0 zone: ResNet-PatchCore **И** DINOv2-PatchCore, отфильтровано
-  HSV-детектором блика). Заменил прежний per-cell ансамбль 2026-08-20 —
-  тот не пережил перевешивание камеры (recall упал до 47.5% на новых
-  данных). См. `first_pos_v2/model.py` и `CLAUDE.md` (раздел "first_pos:
-  сессия 2026-08-20") за полной историей экспериментов.
-- **`second_pos`** — per-cell TinyCNN + LightGBM (без изменений).
+  HSV-детектором блика). См. `first_pos_v2/model.py` за деталями и
+  `CLAUDE.md` (раздел "first_pos: сессия 2026-08-20") за полной историей
+  экспериментов, приведших к этой архитектуре.
+- **`second_pos`** — per-cell TinyCNN + LightGBM.
 
 ## Файлы
 
